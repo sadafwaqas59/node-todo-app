@@ -1,58 +1,59 @@
-import express from "express";
-import mongoose from "mongoose";
-import Todo from "./models/Todo.js";
+const express = require("express");
+const mongoose = require("mongoose");
+const path = require("path");
+const Todo = require("./models/Todo");
 
 const app = express();
-const PORT = 3000;
 
-// Middleware
+// middleware
 app.use(express.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
 
-// MongoDB Connection
+// MongoDB connection
 mongoose
   .connect("mongodb://127.0.0.1:27017/todoDB")
   .then(() => console.log("MongoDB Connected"))
   .catch((err) => console.log(err));
 
-/* =========================
-   GET /  → Show all tasks
-========================= */
+
+// ================= ROUTES =================
+
+// ✅ GET / → fetch all tasks
 app.get("/", async (req, res) => {
-  const todos = await Todo.find();
-  res.render("index", { todos });
+  try {
+    const todos = await Todo.find();
+    res.render("index", { todos });
+  } catch (err) {
+    console.log(err);
+  }
 });
 
-/* =========================
-   POST /add-task → Add task
-========================= */
+// ✅ POST /add-task → add new task
 app.post("/add-task", async (req, res) => {
-  const { task } = req.body;
+  try {
+    const newTodo = new Todo({
+      task: req.body.task
+    });
 
-  await Todo.create({ task });
-
-  res.redirect("/");
+    await newTodo.save();
+    res.redirect("/");
+  } catch (err) {
+    console.log(err);
+  }
 });
 
-/* =========================
-   POST /delete-task/:id
-========================= */
+// ✅ POST /delete-task/:id → delete task
 app.post("/delete-task/:id", async (req, res) => {
-  const { id } = req.params;
-
-  await Todo.findByIdAndDelete(id);
-
-  res.redirect("/");
+  try {
+    await Todo.findByIdAndDelete(req.params.id);
+    res.redirect("/");
+  } catch (err) {
+    console.log(err);
+  }
 });
-import path from "path";
-import { fileURLToPath } from "url";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-app.set("views", path.join(__dirname, "views"));
-
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+// server
+app.listen(3000, () => {
+  console.log("Server running on port 3000");
 });

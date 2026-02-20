@@ -1,0 +1,12 @@
+<h1>Todo App</h1>
+
+<form action="/add-task" method="POST">
+  <input type="text" name="task" required />
+  <button type="submit">Add</button>
+</form>
+
+<ul>
+  <% todos.forEach(todo => { %>
+    <li><%= todo.task %></li>
+  <% }) %>
+</ul>
