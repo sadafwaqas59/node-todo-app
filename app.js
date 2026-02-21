@@ -17,9 +17,9 @@ mongoose
   .catch((err) => console.log(err));
 
 
-// ================= ROUTES =================
+//  ROUTES
 
-// ✅ GET / → fetch all tasks
+//  GET / → fetch all tasks
 app.get("/", async (req, res) => {
   try {
     const todos = await Todo.find();
@@ -29,7 +29,7 @@ app.get("/", async (req, res) => {
   }
 });
 
-// ✅ POST /add-task → add new task
+//  POST /add-task → add new task
 app.post("/add-task", async (req, res) => {
   try {
     const newTodo = new Todo({
@@ -43,7 +43,7 @@ app.post("/add-task", async (req, res) => {
   }
 });
 
-// ✅ POST /delete-task/:id → delete task
+// POST /delete-task/:id → delete task
 app.post("/delete-task/:id", async (req, res) => {
   try {
     await Todo.findByIdAndDelete(req.params.id);
@@ -51,6 +51,27 @@ app.post("/delete-task/:id", async (req, res) => {
   } catch (err) {
     console.log(err);
   }
+  app.post("/complete-task/:id", async (req, res) => {
+  try {
+    await Todo.findByIdAndUpdate(req.params.id, {
+      isCompleted: true,
+    });
+    res.redirect("/");
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+});
+//POST /edit-task/:id → Update task text
+app.post("/edit-task/:id", async (req, res) => {
+  try {
+    await Todo.findByIdAndUpdate(req.params.id, {
+      task: req.body.task,
+    });
+    res.redirect("/");
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+});
 });
 
 // server

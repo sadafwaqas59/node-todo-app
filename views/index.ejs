@@ -1,12 +1,133 @@
-<h1>Todo App</h1>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Todo App</title>
 
-<form action="/add-task" method="POST">
-  <input type="text" name="task" required />
-  <button type="submit">Add</button>
-</form>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      display: flex;
+      justify-content: center;
+      padding-top: 40px;
+    }
 
-<ul>
-  <% todos.forEach(todo => { %>
-    <li><%= todo.task %></li>
-  <% }) %>
-</ul>
+    .container {
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      width: 420px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .add-form {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .add-form input {
+      flex: 1;
+      padding: 8px;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .task-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+    }
+
+    .completed {
+      text-decoration: line-through;
+      color: gray;
+    }
+
+    .actions form {
+      display: inline;
+    }
+
+    button {
+      cursor: pointer;
+      padding: 4px 8px;
+      margin-left: 4px;
+    }
+
+    .edit-input {
+      width: 120px;
+      padding: 4px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>✨ Todo App</h1>
+
+    <!-- ✅ Add Task -->
+    <form class="add-form" action="/add-task" method="POST">
+      <input type="text" name="task" placeholder="Enter a task..." required />
+      <button type="submit">Add</button>
+    </form>
+
+    <ul>
+      <% todos.forEach(function(todo) { %>
+        <li>
+
+          <div class="task-left">
+
+            <!-- ✅ Checkbox Complete -->
+            <form action="/complete-task/<%= todo._id %>" method="POST">
+              <input 
+                type="checkbox" 
+                onchange="this.form.submit()" 
+                <%= todo.isCompleted ? 'checked' : '' %>
+              >
+            </form>
+
+            <!-- ✅ Task Text -->
+            <span class="<%= todo.isCompleted ? 'completed' : '' %>">
+              <%= todo.task %>
+            </span>
+
+          </div>
+
+          <div class="actions">
+
+            <!-- ✅ Edit -->
+            <form action="/edit-task/<%= todo._id %>" method="POST">
+              <input class="edit-input" type="text" name="task" placeholder="Edit" required>
+              <button type="submit">✏</button>
+            </form>
+
+            <!-- ✅ Delete -->
+            <form action="/delete-task/<%= todo._id %>" method="POST">
+              <button type="submit">🗑</button>
+            </form>
+
+          </div>
+
+        </li>
+      <% }) %>
+    </ul>
+  </div>
+</body>
+</html>
