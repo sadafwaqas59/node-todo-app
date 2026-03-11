@@ -1,15 +1,10 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const todoSchema = new mongoose.Schema({
-  task: {
-    type: String,
-    required: true
-  },
-  isCompleted: {
-    type: Boolean,
-    default: false
-  }
+  task: String,
+  isCompleted: { type: Boolean, default: false },
+  image: { type: String, default: null },
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
 });
 
-module.exports = mongoose.model("Todo", todoSchema);
-
+export default mongoose.model("Todo", todoSchema);
